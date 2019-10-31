@@ -1,8 +1,12 @@
+[![Build Status (Travis CI)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=master)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=master)
+
+
+
 # Maven extension to handle altDeploymentRepository legacy/new formats.
 
-## Introduction
+## Overview
 
-This extension will activate if maven-deploy-plugin _and_ `altDeploymentRepository` has been specified. 
+This extension will activate if maven-deploy-plugin _and_ `altDeploymentRepository` has been specified.
 If it has, then it will examine the value for `altDeploymentRepository` and convert it to the correct form
 for the plugin version in use.
 
