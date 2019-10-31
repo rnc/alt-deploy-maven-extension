@@ -115,16 +115,13 @@ public class AltDeployEventSpy extends AbstractEventSpy
 
                 if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 )
                 {
-                    logger.info( "Found deploy plugin {}", deploy );
-
                     userProps.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.MODERN ) );
                 }
                 else
                 {
-                    logger.info( "Found deploy plugin {}", deploy );
-
                     userProps.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.LEGACY ) );
                 }
+                logger.info( "Found deploy plugin {} and updating {} to {}", deploy, ALT_DEPLOY, userProps.getProperty( ALT_DEPLOY )  );
             }
         }
     }

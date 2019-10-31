@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Red Hat, Inc. (jcasey@redhat.com)
+ * Copyright (C) 2019 Red Hat, Inc. (jcasey@redhat.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,4 +20,10 @@ System.out.println( "Slurping POM: ${pomFile.getAbsolutePath()}" )
 File buildLog = new File( basedir, 'build.log' )
 assert buildLog.getText().contains( "Activating AltDeploy extension" )
 assert buildLog.getText().contains( "Found deploy plugin" )
-assert buildLog.getText().contains( "local::default::file:///tmp/deploy")
+assert buildLog.getText().contains( "local::file:///tmp/deploy")
+
+def repodir = new File('@localRepositoryUrl@', "${g.replace('.', '/')}/${a}/${v}" )
+def repopom = new File( repodir, "${a}-${v}.pom" )
+System.out.println( "Checking for installed pom: ${repopom.getAbsolutePath()}")
+assert repopom.exists()
+
