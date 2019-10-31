@@ -107,22 +107,28 @@ public class AltDeployEventSpy extends AbstractEventSpy
         if ( result.isPresent() )
         {
             Artifact deploy = result.get();
+            updateProperties( deploy, userProps );
+            updateProperties( deploy, session.getSystemProperties() );
+            updateProperties( deploy, System.getProperties() );
+        }
+    }
 
-            if ( userProps.containsKey( ALT_DEPLOY ) )
+    private void updateProperties( Artifact deploy, Properties properties )
+                    throws OverConstrainedVersionException, ArtifactDeploymentException
+    {
+        if ( properties.containsKey( ALT_DEPLOY ) )
+        {
+            String altDeploy = properties.getProperty( ALT_DEPLOY );
+
+            if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 )
             {
-                String altDeploy = userProps.getProperty( ALT_DEPLOY );
-                logger.debug( "### Found altDeploymentKey {} and current format is {}", altDeploy, layoutParser.parse( altDeploy ).originalFormat() );
-
-                if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 )
-                {
-                    userProps.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.MODERN ) );
-                }
-                else
-                {
-                    userProps.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.LEGACY ) );
-                }
-                logger.info( "Found deploy plugin {} and updating {} to {}", deploy, ALT_DEPLOY, userProps.getProperty( ALT_DEPLOY )  );
+                properties.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.MODERN ) );
             }
+            else
+            {
+                properties.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.LEGACY ) );
+            }
+            logger.info( "Found deploy plugin {} and updating {} to {}", deploy, ALT_DEPLOY, properties.getProperty( ALT_DEPLOY )  );
         }
     }
 

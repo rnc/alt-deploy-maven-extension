@@ -32,6 +32,7 @@
   <name>Alt-Deploy Handler Maven Extension</name>
   <description>Maven extension to handle legacy / new formats of altDeploymentRepository</description>
   <inceptionYear>2019</inceptionYear>
+  <url>http://github.com/rnc/alt-deploy-maven-extension</url>
 
   <licenses>
     <license>
@@ -63,7 +64,7 @@
     <mavenVersion>3.5.0</mavenVersion>
 
     <it.maven.home>${project.build.directory}/apache-maven-${mavenVersion}</it.maven.home>
-    <localRepositoryUrl>${project.build.directory}/local-repo</localRepositoryUrl>
+    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
     <itPomIncludes>*</itPomIncludes>
   </properties>
 
@@ -250,7 +251,7 @@
             <artifactId>maven-resources-plugin</artifactId>
             <executions>
               <execution>
-                <id>copy-meta-ext</id>
+                <id>copy-ext</id>
                 <phase>pre-integration-test</phase>
                 <goals>
                   <goal>copy-resources</goal>
@@ -271,7 +272,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-invoker-plugin</artifactId>
-            <version>3.2.1</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>integration-test</id>
@@ -281,23 +282,22 @@
                 </goals>
                 <configuration>
                   <debug>true</debug>
-                  <goals>
-                    <goal>clean</goal>
-                    <goal>package</goal>
-                  </goals>
-                  <localRepositoryPath>${localRepositoryUrl}</localRepositoryPath>
-                  <showVersion>true</showVersion>
-                  <mavenHome>${it.maven.home}</mavenHome>
+                  <showErrors>true</showErrors>
+                  <addTestClassPath>true</addTestClassPath>
                   <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                  <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
+                  <mavenHome>${it.maven.home}</mavenHome>
+                  <projectsDirectory>src/it</projectsDirectory>
+                  <settingsFile>src/it/settings.xml</settingsFile>
+                   <showVersion>true</showVersion>
                   <!-- <mavenExecutable>mvnDebug</mavenExecutable> -->
                   <filterProperties>
-                    <pluginPropertyUsedForFiltering>localRepositoryPath</pluginPropertyUsedForFiltering>
-                  </filterProperties>
+                    <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
+                 </filterProperties>
                   <pomIncludes>
                     <pomInclude>${itPomIncludes}/pom.xml</pomInclude>
                   </pomIncludes>
                   <postBuildHookScript>verify</postBuildHookScript>
-                  <settingsFile>src/it/settings.xml</settingsFile>
                 </configuration>
               </execution>
             </executions>
