@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,18 +96,24 @@ public class AltDeployEventSpy extends AbstractEventSpy
             throw new BuildFailureException( "Session is null" );
         }
 
-        final Properties userProps = session.getUserProperties();
         final Set<Artifact> artifacts = session.getAllProjects()
                                                .stream()
                                                .flatMap( p -> p.getPluginArtifacts().stream() )
                                                .collect( Collectors.toSet() );
-        final Optional<Artifact> result =
-                        artifacts.stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).findAny();
 
-        if ( result.isPresent() )
+        final List<Artifact> result =
+                        artifacts.stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).
+                                        sorted().distinct().collect( Collectors.toList() );
+        if ( result.size() > 1 )
         {
-            Artifact deploy = result.get();
-            updateProperties( deploy, userProps );
+            logger.error( "Found multiple versions of maven-deploy-plugin; this is a malformed project.\n\t{}", result );
+            throw new BuildFailureException( "Found multiple versions of maven-deploy-plugin; this is a malformed project: " +  result);
+        }
+
+        if ( ! result.isEmpty() )
+        {
+            Artifact deploy = result.get(0);
+            updateProperties( deploy, session.getUserProperties() );
             updateProperties( deploy, session.getSystemProperties() );
             updateProperties( deploy, System.getProperties() );
         }
