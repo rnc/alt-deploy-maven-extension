@@ -27,7 +27,7 @@
 
   <groupId>org.goots.maven.extensions</groupId>
   <artifactId>alt-deploy-maven-extension</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
 
   <name>Alt-Deploy Handler Maven Extension</name>
   <description>Maven extension to handle legacy / new formats of altDeploymentRepository</description>
@@ -170,6 +170,15 @@
           <artifactId>license-maven-plugin</artifactId>
           <configuration>
             <header>APACHE-2-SIMPLIFIED-COPYRIGHT.txt</header>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <mavenExecutorId>forked-path</mavenExecutorId>
+            <useReleaseProfile>false</useReleaseProfile>
+            <arguments>-Prelease,run-its</arguments>
           </configuration>
         </plugin>
       </plugins>
