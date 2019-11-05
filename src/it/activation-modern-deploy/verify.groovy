@@ -29,6 +29,5 @@ assert repopom.exists()
 
 File buildLog = new File( basedir, 'build.log' )
 assert buildLog.getText().contains( "Activating AltDeploy extension" )
-assert buildLog.getText().contains( "Found deploy plugin" )
-assert buildLog.getText().contains( "local::file://")
-
+assert buildLog.getText().contains( "Deploy plugin is" )
+assert buildLog.getText().contains( "to local::file://")

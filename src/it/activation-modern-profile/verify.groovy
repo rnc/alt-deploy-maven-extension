@@ -10,8 +10,9 @@ def g = pom.groupId.text()
 def a = pom.artifactId.text()
 
 assert buildLog.getText().contains( "Activating AltDeploy extension" )
-assert buildLog.getText().contains( "Found deploy plugin" )
-assert buildLog.getText().contains( "indy-mvn::default::file://")
+assert buildLog.getText().contains( "Deploy plugin is" )
+assert buildLog.getText().contains( "of indy-mvn::default::file://")
+assert buildLog.getText().contains( "to indy-mvn::file://")
 
 
 def repodir = new File(localRepositoryPath, "${g.replace('.', '/')}/${a}/${v}" )

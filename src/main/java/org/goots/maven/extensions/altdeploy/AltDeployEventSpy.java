@@ -24,6 +24,7 @@ import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,14 +116,24 @@ public class AltDeployEventSpy extends AbstractEventSpy
         if ( ! result.isEmpty() )
         {
             Artifact deploy = result.get(0);
+
+            logger.debug( "Deploy plugin is {}", deploy);
+
             updateProperties( deploy, session.getUserProperties() );
             updateProperties( deploy, session.getSystemProperties() );
             updateProperties( deploy, System.getProperties() );
+
             for ( Profile p : session.getSettings().getProfiles() )
             {
                 logger.debug( "Examining setting profile {}", p.getId() );
                 updateProperties( deploy, p.getProperties() );
             }
+            for ( MavenProject p : session.getAllProjects() )
+            {
+                logger.debug( "Examining project {}", p.getId() );
+                updateProperties( deploy, p.getProperties() );
+            }
+
         }
     }
 
@@ -143,7 +154,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
             {
                 properties.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.LEGACY ) );
             }
-            logger.info( "Found deploy plugin {} and updating {} to {}", deploy, ALT_DEPLOY, properties.getProperty( ALT_DEPLOY )  );
+            logger.info( "Updating {} configuration of {} to {}", ALT_DEPLOY, altDeploy, properties.getProperty( ALT_DEPLOY )  );
         }
     }
 
