@@ -133,7 +133,9 @@ public class AltDeployEventSpy extends AbstractEventSpy
         {
             String altDeploy = properties.getProperty( ALT_DEPLOY );
 
-            if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 )
+            if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 ||
+                // This might happen if the metadata resolution fails and we just get 'RELEASE'.
+                Artifact.RELEASE_VERSION.equals( deploy.getSelectedVersion().toString() ) )
             {
                 properties.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.MODERN ) );
             }
