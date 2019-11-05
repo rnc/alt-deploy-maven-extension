@@ -101,6 +101,12 @@
         <version>${mavenVersion}</version>
         <scope>provided</scope>
       </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${mavenVersion}</version>
+        <scope>provided</scope>
+      </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -147,6 +153,10 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -284,7 +294,7 @@
             <version>3.0.1</version>
             <executions>
               <execution>
-                <id>integration-test</id>
+                <id>integration-test-1</id>
                 <goals>
                   <goal>run</goal>
                   <goal>verify</goal>
@@ -293,7 +303,7 @@
                   <debug>true</debug>
                   <showErrors>true</showErrors>
                   <addTestClassPath>true</addTestClassPath>
-                  <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                  <cloneProjectsTo>${project.build.directory}/it-1</cloneProjectsTo>
                   <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
                   <mavenHome>${it.maven.home}</mavenHome>
                   <projectsDirectory>src/it</projectsDirectory>
@@ -305,6 +315,35 @@
                  </filterProperties>
                   <pomIncludes>
                     <pomInclude>${itPomIncludes}/pom.xml</pomInclude>
+                  </pomIncludes>
+                  <pomExcludes>
+                    <pomExclude>activation-modern-profile/pom.xml</pomExclude>
+                  </pomExcludes>
+                  <postBuildHookScript>verify</postBuildHookScript>
+                </configuration>
+              </execution>
+              <execution>
+                <id>integration-test-2</id>
+                <goals>
+                  <goal>run</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <debug>true</debug>
+                  <showErrors>true</showErrors>
+                  <addTestClassPath>true</addTestClassPath>
+                  <cloneProjectsTo>${project.build.directory}/it-2</cloneProjectsTo>
+                  <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
+                  <mavenHome>${it.maven.home}</mavenHome>
+                  <projectsDirectory>src/it</projectsDirectory>
+                  <settingsFile>src/it/settings-profile.xml</settingsFile>
+                  <showVersion>true</showVersion>
+                  <!-- <mavenExecutable>mvnDebug</mavenExecutable> -->
+                  <filterProperties>
+                    <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
+                  </filterProperties>
+                  <pomIncludes>
+                    <pomInclude>activation-modern-profile/pom.xml</pomInclude>
                   </pomIncludes>
                   <postBuildHookScript>verify</postBuildHookScript>
                 </configuration>

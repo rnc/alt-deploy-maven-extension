@@ -10,7 +10,12 @@ This extension will activate if maven-deploy-plugin _and_ `altDeploymentReposito
 If it has, then it will examine the value for `altDeploymentRepository` and convert it to the correct form
 for the plugin version in use.
 
-If the plugin version is >= 3.0.0-M1 it uses:
+It will search for `altDeploymentRepository` in the following locations:
+* User properties
+* System Properties
+* Settings file properties
+
+If the deployment plugin version is >= 3.0.0-M1 it uses:
 
 ```
 id::url

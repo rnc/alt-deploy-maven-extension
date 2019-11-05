@@ -24,6 +24,7 @@ import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.settings.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +105,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
         final List<Artifact> result =
                         artifacts.stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).
                                         sorted().distinct().collect( Collectors.toList() );
+
         if ( result.size() > 1 )
         {
             logger.error( "Found multiple versions of maven-deploy-plugin; this is a malformed project.\n\t{}", result );
@@ -116,6 +118,11 @@ public class AltDeployEventSpy extends AbstractEventSpy
             updateProperties( deploy, session.getUserProperties() );
             updateProperties( deploy, session.getSystemProperties() );
             updateProperties( deploy, System.getProperties() );
+            for ( Profile p : session.getSettings().getProfiles() )
+            {
+                logger.debug( "Examining setting profile {}", p.getId() );
+                updateProperties( deploy, p.getProperties() );
+            }
         }
     }
 
