@@ -11,6 +11,7 @@ If it has, then it will examine the value for `altDeploymentRepository` and conv
 for the plugin version in use.
 
 It will search for `altDeploymentRepository` in the following locations:
+* Project properties
 * User properties
 * System Properties
 * Settings file properties
