@@ -33,7 +33,7 @@ id::layout::url
 
 ## Installation
 
-It is recommended to install in your Maven `lib/ext` directory.
+It is recommended to install in your Maven `lib/ext` directory. Binary releases can be obtained from Maven Central [here](http://central.maven.org/maven2/org/goots/maven/extensions/alt-deploy-maven-extension) and snapshots from [here](https://oss.sonatype.org/content/repositories/snapshots/org/goots/maven/extensions/alt-deploy-maven-extension).
 
 ## Configuration
 
