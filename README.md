@@ -6,7 +6,7 @@
 
 ## Overview
 
-This extension will activate if maven-deploy-plugin _and_ `altDeploymentRepository` has been specified.
+This extension will activate if a maven-deploy-plugin _and_ `altDeploymentRepository` have been specified.
 If it has, then it will examine the value for `altDeploymentRepository` and convert it to the correct form
 for the plugin version in use.
 
