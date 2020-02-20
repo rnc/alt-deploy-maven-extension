@@ -270,7 +270,10 @@
                 </goals>
                 <configuration>
                   <items>
+                    <!-- <item>3.2.2</item> -->
                     <!-- <item>3.2.3</item> -->
+                    <item>3.2.5</item>
+                    <item>3.3.1</item>
                     <item>3.3.9</item>
                     <item>${mavenVersion}</item>
                     <item>3.5.4</item>
