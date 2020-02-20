@@ -78,7 +78,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
             {
                 try
                 {
-                    logger.info( "Activating AltDeploy extension {}", Utils.getManifestInformation() );
+                    logger.info( "Activating AltDeploy extension {}", ManifestUtils.getManifestInformation() );
 
                     checkForAltDeployment( ee.getSession() );
                 }
