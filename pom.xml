@@ -201,13 +201,9 @@
             <debug>true</debug>
             <showErrors>true</showErrors>
             <addTestClassPath>true</addTestClassPath>
-            <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
             <projectsDirectory>src/it</projectsDirectory>
             <showVersion>true</showVersion>
             <!-- <mavenExecutable>mvnDebug</mavenExecutable> -->
-            <filterProperties>
-              <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
-            </filterProperties>
             <postBuildHookScript>verify</postBuildHookScript>
           </configuration>
         </plugin>
@@ -336,6 +332,7 @@
                       </plugin>
                       <goal>run</goal>
                       <configuration>
+                        <localRepositoryPath>${localRepositoryPath}-@item@</localRepositoryPath>
                         <settingsFile>src/it/settings.xml</settingsFile>
                         <cloneProjectsTo>${project.build.directory}/it-one-@item@</cloneProjectsTo>
                         <mavenHome>${it.maven.home}@item@</mavenHome>
