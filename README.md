@@ -30,7 +30,7 @@ id::layout::url
 
 (where layout defaults to `default`).
 
-This has been tested with Maven 3.3.9 to 3.6.3.
+This has been tested with Maven 3.2.2 to 3.6.3.
 
 ## Installation
 
