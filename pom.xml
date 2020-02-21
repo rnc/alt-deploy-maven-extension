@@ -62,6 +62,7 @@
     <javaVersion>1.8</javaVersion>
     <javaTestVersion>${javaVersion}</javaTestVersion>
     <mavenVersion>3.5.2</mavenVersion>
+    <sisu>0.3.3</sisu>
 
     <it.maven.home>${project.build.directory}/apache-maven-</it.maven.home>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
@@ -100,6 +101,11 @@
         <version>${mavenVersion}</version>
         <scope>provided</scope>
       </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+      <version>${sisu}</version>
+    </dependency>
 
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -149,6 +155,11 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.plexus</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
@@ -190,13 +201,9 @@
             <debug>true</debug>
             <showErrors>true</showErrors>
             <addTestClassPath>true</addTestClassPath>
-            <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
             <projectsDirectory>src/it</projectsDirectory>
             <showVersion>true</showVersion>
             <!-- <mavenExecutable>mvnDebug</mavenExecutable> -->
-            <filterProperties>
-              <localRepositoryPath>${localRepositoryPath}</localRepositoryPath>
-            </filterProperties>
             <postBuildHookScript>verify</postBuildHookScript>
           </configuration>
         </plugin>
@@ -211,7 +218,7 @@
       <plugin>
         <groupId>org.eclipse.sisu</groupId>
         <artifactId>sisu-maven-plugin</artifactId>
-        <version>0.3.3</version>
+        <version>${sisu}</version>
         <executions>
           <execution>
             <id>generate-index</id>
@@ -236,6 +243,7 @@
                 <includes>
                   <include>org.goots.maven.extensions:*</include>
                   <include>javax.inject:*</include>
+                  <include>org.eclipse.*:*</include>
                 </includes>
               </artifactSet>
               <filters>
@@ -270,8 +278,8 @@
                 </goals>
                 <configuration>
                   <items>
-                    <!-- <item>3.2.2</item> -->
-                    <!-- <item>3.2.3</item> -->
+                    <item>3.2.2</item>
+                    <item>3.2.3</item>
                     <item>3.2.5</item>
                     <item>3.3.1</item>
                     <item>3.3.9</item>
@@ -324,6 +332,7 @@
                       </plugin>
                       <goal>run</goal>
                       <configuration>
+                        <localRepositoryPath>${localRepositoryPath}-@item@</localRepositoryPath>
                         <settingsFile>src/it/settings.xml</settingsFile>
                         <cloneProjectsTo>${project.build.directory}/it-one-@item@</cloneProjectsTo>
                         <mavenHome>${it.maven.home}@item@</mavenHome>
