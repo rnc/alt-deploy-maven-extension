@@ -109,8 +109,17 @@ public class AltDeployEventSpy extends AbstractEventSpy
 
         if ( result.size() > 1 )
         {
-            logger.error( "Found multiple versions of maven-deploy-plugin; this is a malformed project.\n\t{}", result );
-            throw new BuildFailureException( "Found multiple versions of maven-deploy-plugin; this is a malformed project: " +  result);
+            long threeCount = result.stream().filter( r -> r.getVersion().startsWith( "3" ) ).count();
+            if ( threeCount == result.size() || threeCount == 0)
+            {
+                // Either the result is all 3.x or 2.x - print out a warning only
+                logger.warn( "Found multiple minor versions of maven-deploy-plugin; this is a malformed project.\n\t{}", result );
+            }
+            else
+            {
+                logger.error( "Found multiple major versions of maven-deploy-plugin; this is a malformed project.\n\t{}", result );
+                throw new BuildFailureException( "Found multiple versions of maven-deploy-plugin; this is a malformed project: " +  result);
+            }
         }
 
         if ( ! result.isEmpty() )
@@ -133,7 +142,6 @@ public class AltDeployEventSpy extends AbstractEventSpy
                 logger.debug( "Examining project {}", p.getId() );
                 updateProperties( deploy, p.getProperties() );
             }
-
         }
     }
 
