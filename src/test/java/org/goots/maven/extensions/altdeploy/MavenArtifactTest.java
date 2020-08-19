@@ -25,6 +25,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class MavenArtifactTest
@@ -44,7 +48,96 @@ public class MavenArtifactTest
 
         assertTrue ( legacy.getSelectedVersion().compareTo( post3version ) < 0);
         assertTrue ( legacy.getSelectedVersion().compareTo( post3M1.getSelectedVersion() ) < 0);
-        System.out.println ("### " + post3M1.getSelectedVersion().compareTo( post3version ) );
         assertTrue( post3M1.getSelectedVersion().compareTo( post3version ) > 0 );
+    }
+
+    @Test
+    public void compareArtifactWithOnlyRelease() throws OverConstrainedVersionException, IllegalAccessException
+    {
+        Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
+                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Set<Artifact> collection = new HashSet<>();
+        collection.add( legacy );
+
+        AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
+        Set<Artifact> result = spy.processArtifacts( collection );
+
+        assertEquals( 1, result.size() );
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( "3.0.0-M1" ));
+    }
+
+    @Test
+    public void compareArtifactWithReleaseAndPreThree() throws OverConstrainedVersionException, IllegalAccessException
+    {
+        Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
+                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
+                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Set<Artifact> collection = new HashSet<>();
+        collection.add( legacy );
+        collection.add( text );
+
+        AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
+        Set<Artifact> result = spy.processArtifacts( collection );
+
+        assertEquals( 1, result.size() );
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( legacy.getVersion() ));
+    }
+
+    @Test
+    public void compareArtifactWithReleaseAndPostThree() throws OverConstrainedVersionException, IllegalAccessException
+    {
+        Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
+                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
+                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Set<Artifact> collection = new HashSet<>();
+        collection.add( text );
+        collection.add( post3M1 );
+
+        AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
+        Set<Artifact> result = spy.processArtifacts( collection );
+
+        assertEquals( 1, result.size() );
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( post3M1.getVersion() ));
+    }
+
+    @Test
+    public void compareArtifactWithReleaseAndMultiple() throws OverConstrainedVersionException, IllegalAccessException
+    {
+        Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
+                                             "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
+                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
+                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Set<Artifact> collection = new HashSet<>();
+        collection.add( legacy );
+        collection.add( text );
+        collection.add( post3M1 );
+
+        AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
+        Set<Artifact> result = spy.processArtifacts( collection );
+
+        assertEquals( 2, result.size() );
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( "3.0.0-M1" ));
+    }
+
+    @Test
+    public void compareArtifactWithMultiple() throws OverConstrainedVersionException, IllegalAccessException
+    {
+        Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
+                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
+                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Set<Artifact> collection = new HashSet<>();
+        collection.add( legacy );
+        collection.add( post3M1 );
+
+        AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
+        Set<Artifact> result = spy.processArtifacts( collection );
+
+        assertEquals( 2, result.size() );
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( "3.0.0-M1" ));
     }
 }
