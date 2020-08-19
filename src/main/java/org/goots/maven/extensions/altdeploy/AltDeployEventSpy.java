@@ -17,6 +17,7 @@ package org.goots.maven.extensions.altdeploy;
 
 import org.apache.maven.BuildFailureException;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.deployer.ArtifactDeploymentException;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -44,6 +45,8 @@ import static org.apache.maven.execution.ExecutionEvent.Type.SessionStarted;
 @Singleton
 public class AltDeployEventSpy extends AbstractEventSpy
 {
+    private static final String LATEST_THREE_VERSION = "3.0.0-M1";
+
     private static final ArtifactVersion POST_THREE_VERSION = new DefaultArtifactVersion( "3.0.0-A1" );
 
     private static final String ALT_DEPLOY = "altDeploymentRepository";
@@ -103,14 +106,12 @@ public class AltDeployEventSpy extends AbstractEventSpy
                                                .flatMap( p -> p.getPluginArtifacts().stream() )
                                                .collect( Collectors.toSet() );
 
-        final List<Artifact> result =
-                        artifacts.stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).
-                                        sorted().distinct().collect( Collectors.toList() );
+        final Set<Artifact> result = processArtifacts(artifacts);
 
         if ( result.size() > 1 )
         {
             long threeCount = result.stream().filter( r -> r.getVersion().startsWith( "3" ) ).count();
-            if ( threeCount == result.size() || threeCount == 0)
+            if ( threeCount == result.size() || threeCount == 0 )
             {
                 // Either the result is all 3.x or 2.x - print out a warning only
                 logger.warn( "Found multiple minor versions of maven-deploy-plugin; this is a malformed project.\n\t{}", result );
@@ -124,7 +125,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
 
         if ( ! result.isEmpty() )
         {
-            Artifact deploy = result.get(0);
+            Artifact deploy = result.stream().findAny().get();
 
             logger.debug( "Deploy plugin is {}", deploy);
 
@@ -143,6 +144,49 @@ public class AltDeployEventSpy extends AbstractEventSpy
                 updateProperties( deploy, p.getProperties() );
             }
         }
+    }
+
+    // Package private for testing
+    Set<Artifact> processArtifacts( Set<Artifact> artifacts )
+    {
+        final List<Artifact> intermediary =
+                        artifacts.stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).
+                                        sorted().distinct().collect( Collectors.toList() );
+
+        final Set<Artifact> result = intermediary.stream().filter( a -> {
+            if ( Character.isDigit( a.getVersion().charAt( 0 ) ) )
+            {
+                return true;
+            }
+            else
+            {
+                logger.debug( "Found non-digit versions for deploy plugin {}", a );
+                return false;
+            }
+        } ).collect(Collectors.toSet());
+
+        if ( result.size() != intermediary.size() )
+        {
+            intermediary.forEach( a -> {
+                if ( Character.isLetter( a.getVersion().charAt( 0 ) ) )
+                {
+                    String target;
+                    if ( result.size() > 0 )
+                    {
+                        target = result.stream().findFirst().get().getVersion();
+                    }
+                    else
+                    {
+                        target = LATEST_THREE_VERSION;
+                    }
+                    logger.info( "Resetting maven-deploy-plugin {} to version {}", a, target );
+                    a.setVersion( target );
+                    result.add( a );
+                }
+            } );
+        }
+
+        return result;
     }
 
     private void updateProperties( Artifact deploy, Properties properties )
