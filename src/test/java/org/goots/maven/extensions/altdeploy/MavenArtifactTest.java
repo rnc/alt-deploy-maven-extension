@@ -52,7 +52,7 @@ public class MavenArtifactTest
     }
 
     @Test
-    public void compareArtifactWithOnlyRelease() throws OverConstrainedVersionException, IllegalAccessException
+    public void compareArtifactWithOnlyRelease()
     {
         Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
@@ -67,7 +67,7 @@ public class MavenArtifactTest
     }
 
     @Test
-    public void compareArtifactWithReleaseAndPreThree() throws OverConstrainedVersionException, IllegalAccessException
+    public void compareArtifactWithReleaseAndPreThree()
     {
         Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
@@ -85,7 +85,7 @@ public class MavenArtifactTest
     }
 
     @Test
-    public void compareArtifactWithReleaseAndPostThree() throws OverConstrainedVersionException, IllegalAccessException
+    public void compareArtifactWithReleaseAndPostThree()
     {
         Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
@@ -103,7 +103,7 @@ public class MavenArtifactTest
     }
 
     @Test
-    public void compareArtifactWithReleaseAndMultiple() throws OverConstrainedVersionException, IllegalAccessException
+    public void compareArtifactWithReleaseAndMultiple()
     {
         Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
                                              "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
@@ -124,7 +124,7 @@ public class MavenArtifactTest
     }
 
     @Test
-    public void compareArtifactWithMultiple() throws OverConstrainedVersionException, IllegalAccessException
+    public void compareArtifactWithMultiple()
     {
         Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );

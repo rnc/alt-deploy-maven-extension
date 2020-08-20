@@ -16,31 +16,30 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.goots.maven.extensions.integrationtest</groupId>
-  <artifactId>multiple-deploy-fail</artifactId>
-  <version>1</version>
+  <parent>
+    <groupId>org.goots.maven.extensions.integrationtest</groupId>
+    <artifactId>multiple-deploy-non-digit</artifactId>
+    <version>1</version>
+  </parent>
+
+  <artifactId>multiple-deploy-non-digit-child2</artifactId>
   <packaging>pom</packaging>
 
   <name>Validate metadata</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.plugin.deploy>3.0.0-M1</version.plugin.deploy>
   </properties>
 
   <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${version.plugin.deploy}</version>
-      </plugin>
-    </plugins>
+   <plugins>
+     <plugin>
+       <artifactId>maven-deploy-plugin</artifactId>
+       <version>${version.plugin.deploy}</version>
+     </plugin>
+   </plugins>
   </build>
-
-  <modules>
-    <module>child</module>
-  </modules>
 </project>

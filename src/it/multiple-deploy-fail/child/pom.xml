@@ -21,11 +21,11 @@
 
   <parent>
     <groupId>org.goots.maven.extensions.integrationtest</groupId>
-    <artifactId>multiple-deploy</artifactId>
+    <artifactId>multiple-deploy-fail</artifactId>
     <version>1</version>
   </parent>
 
-  <artifactId>multiple-deploy-child</artifactId>
+  <artifactId>multiple-deploy-fail-child</artifactId>
   <packaging>pom</packaging>
 
   <name>Validate metadata</name>
