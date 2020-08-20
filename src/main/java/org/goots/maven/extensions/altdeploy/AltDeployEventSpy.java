@@ -17,7 +17,6 @@ package org.goots.maven.extensions.altdeploy;
 
 import org.apache.maven.BuildFailureException;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.deployer.ArtifactDeploymentException;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -196,9 +195,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
         {
             String altDeploy = properties.getProperty( ALT_DEPLOY );
 
-            if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 ||
-                // This might happen if the metadata resolution fails and we just get 'RELEASE'.
-                Artifact.RELEASE_VERSION.equals( deploy.getSelectedVersion().toString() ) )
+            if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 )
             {
                 properties.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.MODERN ) );
             }

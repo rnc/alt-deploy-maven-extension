@@ -21,12 +21,12 @@
 
   <parent>
     <groupId>org.goots.maven.extensions.integrationtest</groupId>
-    <artifactId>multiple-deploy-warn</artifactId>
+    <artifactId>multiple-deploy-non-digit</artifactId>
     <version>1</version>
   </parent>
 
-  <artifactId>multiple-deploy-warn-child</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>multiple-deploy-non-digit-child1</artifactId>
+  <packaging>bundle</packaging>
 
   <name>Validate metadata</name>
 
@@ -37,8 +37,35 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
+        <extensions>true</extensions>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.5.0</version>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              !com.google.common.base.internal,
+              !com.google.common.util.concurrent.internal,
+              com.google.common.*
+            </Export-Package>
+            <Import-Package>
+              com.google.common.util.concurrent.internal,
+              javax.annotation;resolution:=optional,
+              javax.crypto.*;resolution:=optional,
+              sun.misc.*;resolution:=optional
+            </Import-Package>
+            <Bundle-DocURL>https://github.com/google/guava/</Bundle-DocURL>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
