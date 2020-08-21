@@ -24,6 +24,7 @@ import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Profile;
 import org.slf4j.Logger;
@@ -33,7 +34,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -100,12 +104,13 @@ public class AltDeployEventSpy extends AbstractEventSpy
             throw new BuildFailureException( "Session is null" );
         }
 
-        final Set<Artifact> artifacts = session.getAllProjects()
-                                               .stream()
-                                               .flatMap( p -> p.getPluginArtifacts().stream() )
-                                               .collect( Collectors.toSet() );
+        Map<Artifact, Plugin> artifactPluginMap = new HashMap<>();
+        session.getAllProjects().forEach( p -> p.getPluginArtifacts().stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).distinct().
+                        forEach( a -> artifactPluginMap.put( a, p.getPlugin( a.getGroupId() + ":" + a.getArtifactId() ) ) ) );
 
-        final Set<Artifact> result = processArtifacts(artifacts);
+        artifactPluginMap.forEach( ( key, value ) -> logger.debug( "Found maven-deploy-plugin {} -> {} ", key, value.getId() ) );
+
+        final Set<Artifact> result = processArtifacts(artifactPluginMap);
 
         if ( result.size() > 1 )
         {
@@ -146,11 +151,9 @@ public class AltDeployEventSpy extends AbstractEventSpy
     }
 
     // Package private for testing
-    Set<Artifact> processArtifacts( Set<Artifact> artifacts )
+    Set<Artifact> processArtifacts( Map<Artifact, Plugin> artifacts )
     {
-        final List<Artifact> intermediary =
-                        artifacts.stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).
-                                        sorted().distinct().collect( Collectors.toList() );
+        final List<Artifact> intermediary = new ArrayList<>( artifacts.keySet() );
 
         final Set<Artifact> result = intermediary.stream().filter( a -> {
             if ( Character.isDigit( a.getVersion().charAt( 0 ) ) )
@@ -179,6 +182,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
                         target = LATEST_THREE_VERSION;
                     }
                     logger.info( "Resetting maven-deploy-plugin {} to version {}", a, target );
+                    artifacts.get( a ).setVersion( target );
                     a.setVersion( target );
                     result.add( a );
                 }

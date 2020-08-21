@@ -21,11 +21,16 @@ import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
+import org.apache.maven.model.Plugin;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 
+import javax.management.remote.rmi._RMIConnection_Stub;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertEquals;
@@ -36,6 +41,16 @@ public class MavenArtifactTest
     @Rule
     public final SystemOutRule systemOutRule = new SystemOutRule().enableLog().muteForSuccessfulTests();
 
+    private Plugin mdp = new Plugin();
+
+    @Before
+    public void setup()
+    {
+        mdp.setGroupId( "org.apache.maven" );
+        mdp.setArtifactId( "maven-deploy-plugin" );
+        mdp.setVersion( "" );
+    }
+    
     @Test
     public void compareArtifact() throws OverConstrainedVersionException, IllegalAccessException
     {
@@ -56,8 +71,8 @@ public class MavenArtifactTest
     {
         Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Set<Artifact> collection = new HashSet<>();
-        collection.add( legacy );
+        Map<Artifact, Plugin> collection = new HashMap<>();
+        collection.put( legacy, mdp );
 
         AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
         Set<Artifact> result = spy.processArtifacts( collection );
@@ -73,9 +88,9 @@ public class MavenArtifactTest
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Set<Artifact> collection = new HashSet<>();
-        collection.add( legacy );
-        collection.add( text );
+        Map<Artifact, Plugin> collection = new HashMap<>();
+        collection.put( legacy, mdp );
+        collection.put( text, mdp );
 
         AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
         Set<Artifact> result = spy.processArtifacts( collection );
@@ -91,9 +106,9 @@ public class MavenArtifactTest
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
                                                 "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Set<Artifact> collection = new HashSet<>();
-        collection.add( text );
-        collection.add( post3M1 );
+        Map<Artifact, Plugin> collection = new HashMap<>();
+        collection.put( text, mdp );
+        collection.put( post3M1, mdp );
 
         AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
         Set<Artifact> result = spy.processArtifacts( collection );
@@ -111,10 +126,10 @@ public class MavenArtifactTest
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
                                                 "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Set<Artifact> collection = new HashSet<>();
-        collection.add( legacy );
-        collection.add( text );
-        collection.add( post3M1 );
+        Map<Artifact, Plugin> collection = new HashMap<>();
+        collection.put( legacy, mdp );
+        collection.put( text, mdp );
+        collection.put( post3M1, mdp );
 
         AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
         Set<Artifact> result = spy.processArtifacts( collection );
@@ -130,9 +145,9 @@ public class MavenArtifactTest
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
                                                 "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Set<Artifact> collection = new HashSet<>();
-        collection.add( legacy );
-        collection.add( post3M1 );
+        Map<Artifact, Plugin> collection = new HashMap<>();
+        collection.put( legacy, mdp );
+        collection.put( post3M1, mdp );
 
         AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
         Set<Artifact> result = spy.processArtifacts( collection );
