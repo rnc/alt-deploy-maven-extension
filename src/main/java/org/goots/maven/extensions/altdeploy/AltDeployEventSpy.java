@@ -104,14 +104,23 @@ public class AltDeployEventSpy extends AbstractEventSpy
             throw new BuildFailureException( "Session is null" );
         }
 
-        Map<Artifact, Plugin> artifactPluginMap = new HashMap<>();
-        session.getAllProjects().forEach( p -> p.getPluginArtifacts().stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).distinct().
-                        forEach( a -> artifactPluginMap.put( a, p.getPlugin( a.getGroupId() + ":" + a.getArtifactId() ) ) ) );
+        Map<MavenProject, Map<Artifact, Plugin>> projectPluginMap = new HashMap<>();
 
-        artifactPluginMap.forEach( ( key, value ) -> logger.debug( "Found maven-deploy-plugin {} -> {} ", key, value.getId() ) );
+        session.getAllProjects().forEach( project -> {
+            Map<Artifact, Plugin> aPluginMap = new HashMap<>();
+            projectPluginMap.put( project, aPluginMap );
+            project.getPluginArtifacts().stream().filter( a -> "maven-deploy-plugin".equals( a.getArtifactId() ) ).forEach( artifact -> {
+                    logger.info( "Found deploy plugin {} in project {} ", artifact.getId(), project );
+                    aPluginMap.put( artifact, project.getPlugin( artifact.getGroupId() + ":" + artifact.getArtifactId() ) );
+                }
+            );
+        } );
 
-        final Set<Artifact> result = processArtifacts(artifactPluginMap);
+        logger.debug( "Resulting deploy build plugin map of {}", projectPluginMap );
 
+        final Set<Artifact> result = processArtifacts(projectPluginMap);
+
+        logger.debug( "Resulting deploy artifacts of {}", result );
         if ( result.size() > 1 )
         {
             long threeCount = result.stream().filter( r -> r.getVersion().startsWith( "3" ) ).count();
@@ -131,7 +140,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
         {
             Artifact deploy = result.stream().findAny().get();
 
-            logger.debug( "Deploy plugin is {}", deploy);
+            logger.info( "Deploy plugin is {}", deploy);
 
             updateProperties( deploy, session.getUserProperties() );
             updateProperties( deploy, session.getSystemProperties() );
@@ -151,9 +160,10 @@ public class AltDeployEventSpy extends AbstractEventSpy
     }
 
     // Package private for testing
-    Set<Artifact> processArtifacts( Map<Artifact, Plugin> artifacts )
+    Set<Artifact> processArtifacts( Map<MavenProject, Map<Artifact, Plugin>> projectsWithPlugins )
     {
-        final List<Artifact> intermediary = new ArrayList<>( artifacts.keySet() );
+        final List<Artifact> intermediary = new ArrayList<>();
+        projectsWithPlugins.entrySet().forEach( entry -> intermediary.addAll( entry.getValue().keySet() ) );
 
         final Set<Artifact> result = intermediary.stream().filter( a -> {
             if ( Character.isDigit( a.getVersion().charAt( 0 ) ) )
@@ -181,9 +191,14 @@ public class AltDeployEventSpy extends AbstractEventSpy
                     {
                         target = LATEST_THREE_VERSION;
                     }
-                    logger.info( "Resetting maven-deploy-plugin {} to version {}", a, target );
-                    artifacts.get( a ).setVersion( target );
-                    a.setVersion( target );
+                    projectsWithPlugins.entrySet()
+                                       .stream()
+                                       .filter( entry -> entry.getValue().containsKey( a ) )
+                                       .forEach( entry -> {
+                                           logger.info( "Resetting maven-deploy-plugin {} to version {}", a, target );
+                                           entry.getValue().get( a ).setVersion( target );
+                                           a.setVersion( target );
+                                       } );
                     result.add( a );
                 }
             } );
