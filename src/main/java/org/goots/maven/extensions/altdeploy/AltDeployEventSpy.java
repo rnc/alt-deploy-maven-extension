@@ -48,11 +48,11 @@ import static org.apache.maven.execution.ExecutionEvent.Type.SessionStarted;
 @Singleton
 public class AltDeployEventSpy extends AbstractEventSpy
 {
-    private static final String LATEST_THREE_VERSION = "3.0.0-M1";
+    static final String LATEST_THREE_VERSION = "3.0.0-M1";
 
-    private static final ArtifactVersion POST_THREE_VERSION = new DefaultArtifactVersion( "3.0.0-A1" );
+    static final ArtifactVersion POST_THREE_VERSION = new DefaultArtifactVersion( "3.0.0-A1" );
 
-    private static final String ALT_DEPLOY = "altDeploymentRepository";
+    static final String ALT_DEPLOY = "altDeploymentRepository";
 
     private final Logger logger = LoggerFactory.getLogger( getClass() );
 
@@ -132,7 +132,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
             else
             {
                 logger.error( "Found multiple major versions of maven-deploy-plugin; this is a malformed project.\n\t{}", result );
-                throw new BuildFailureException( "Found multiple versions of maven-deploy-plugin; this is a malformed project: " +  result);
+                throw new BuildFailureException( "Found multiple major versions of maven-deploy-plugin; this is a malformed project: " +  result);
             }
         }
 
@@ -163,7 +163,7 @@ public class AltDeployEventSpy extends AbstractEventSpy
     Set<Artifact> processArtifacts( Map<MavenProject, Map<Artifact, Plugin>> projectsWithPlugins )
     {
         final List<Artifact> intermediary = new ArrayList<>();
-        projectsWithPlugins.entrySet().forEach( entry -> intermediary.addAll( entry.getValue().keySet() ) );
+        projectsWithPlugins.forEach( ( key, value ) -> intermediary.addAll( value.keySet() ) );
 
         final Set<Artifact> result = intermediary.stream().filter( a -> {
             if ( Character.isDigit( a.getVersion().charAt( 0 ) ) )
@@ -207,14 +207,15 @@ public class AltDeployEventSpy extends AbstractEventSpy
         return result;
     }
 
-    private void updateProperties( Artifact deploy, Properties properties )
+    void updateProperties( Artifact deploy, Properties properties )
                     throws OverConstrainedVersionException, ArtifactDeploymentException
     {
         if ( properties.containsKey( ALT_DEPLOY ) )
         {
             String altDeploy = properties.getProperty( ALT_DEPLOY );
 
-            if ( deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 )
+            if ( (deploy.getVersionRange() != null && deploy.getSelectedVersion().compareTo( POST_THREE_VERSION ) > 0 ) ||
+                    new DefaultArtifactVersion( deploy.getVersion() ).compareTo( POST_THREE_VERSION ) > 0 )
             {
                 properties.setProperty( ALT_DEPLOY, layoutParser.parse( altDeploy ).convert( LayoutParser.Format.MODERN ) );
             }
