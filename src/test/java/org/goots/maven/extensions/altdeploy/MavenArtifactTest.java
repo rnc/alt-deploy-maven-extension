@@ -18,6 +18,7 @@ package org.goots.maven.extensions.altdeploy;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.deployer.ArtifactDeploymentException;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
@@ -30,10 +31,13 @@ import org.junit.contrib.java.lang.system.SystemOutRule;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
+import static org.goots.maven.extensions.altdeploy.AltDeployEventSpy.ALT_DEPLOY;
+import static org.goots.maven.extensions.altdeploy.AltDeployEventSpy.LATEST_THREE_VERSION;
 
 public class MavenArtifactTest
 {
@@ -62,7 +66,7 @@ public class MavenArtifactTest
 
         Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
                                           "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
+        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", LATEST_THREE_VERSION,
                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
 
         assertTrue ( legacy.getSelectedVersion().compareTo( post3version ) < 0);
@@ -85,7 +89,7 @@ public class MavenArtifactTest
         Set<Artifact> result = spy.processArtifacts( projectPlugins );
 
         assertEquals( 1, result.size() );
-        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( "3.0.0-M1" ));
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( LATEST_THREE_VERSION ));
     }
 
     @Test
@@ -113,7 +117,7 @@ public class MavenArtifactTest
     {
         Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
+        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", LATEST_THREE_VERSION,
                                                 "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Map<Artifact, Plugin> collection = new HashMap<>();
         collection.put( text, mdp );
@@ -135,7 +139,7 @@ public class MavenArtifactTest
                                              "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
+        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", LATEST_THREE_VERSION,
                                                 "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Map<Artifact, Plugin> collection = new HashMap<>();
         collection.put( legacy, mdp );
@@ -148,7 +152,7 @@ public class MavenArtifactTest
         Set<Artifact> result = spy.processArtifacts( projectPlugins );
 
         assertEquals( 2, result.size() );
-        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( "3.0.0-M1" ));
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( LATEST_THREE_VERSION ));
     }
 
     @Test
@@ -156,7 +160,7 @@ public class MavenArtifactTest
     {
         Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
                                                "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
-        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "3.0.0-M1",
+        Artifact post3M1 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", LATEST_THREE_VERSION,
                                                 "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         Map<Artifact, Plugin> collection = new HashMap<>();
         collection.put( legacy, mdp );
@@ -168,7 +172,7 @@ public class MavenArtifactTest
         Set<Artifact> result = spy.processArtifacts( projectPlugins );
 
         assertEquals( 2, result.size() );
-        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( "3.0.0-M1" ));
+        assertTrue ( result.stream().findFirst().get().getVersion().equalsIgnoreCase( LATEST_THREE_VERSION ));
     }
 
     @Test
@@ -208,5 +212,57 @@ public class MavenArtifactTest
         assertTrue ( mdp.getVersion().equalsIgnoreCase( "2.8" ));
         assertTrue ( mdp2.getVersion().equalsIgnoreCase( "2.8" ));
         assertTrue ( mdp3.getVersion().equalsIgnoreCase( "2.8" ));
+    }
+
+
+    @Test
+    public void compareArtifactWithReleaseWithRangeLatest()
+                    throws OverConstrainedVersionException, ArtifactDeploymentException
+    {
+        Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
+                                             "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Map<Artifact, Plugin> collection = new HashMap<>();
+        collection.put( text, mdp );
+
+        Properties properties = new Properties();
+        properties.put( ALT_DEPLOY, "local::default::file:///tmp/deploy" );
+
+        Map<MavenProject, Map<Artifact, Plugin>> projectPlugins = new HashMap<>();
+        projectPlugins.put( project1, collection );
+
+        AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
+        Set<Artifact> result = spy.processArtifacts( projectPlugins );
+        assertEquals( 1, result.size() );
+
+        spy.updateProperties( result.stream().findFirst().get(), properties );
+
+        assertEquals( "local::file:///tmp/deploy", properties.getProperty( ALT_DEPLOY ) );
+    }
+
+    @Test
+    public void compareArtifactWithReleaseWithRangeLegacy()
+                    throws OverConstrainedVersionException, ArtifactDeploymentException
+    {
+        Artifact text = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "RELEASE",
+                                             "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Artifact legacy = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
+                                               "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
+        Map<Artifact, Plugin> collection = new HashMap<>();
+        collection.put( text, mdp );
+        collection.put( legacy, mdp );
+
+        Properties properties = new Properties();
+        properties.put( ALT_DEPLOY, "local::default::file:///tmp/deploy" );
+
+        Map<MavenProject, Map<Artifact, Plugin>> projectPlugins = new HashMap<>();
+        projectPlugins.put( project1, collection );
+
+        AltDeployEventSpy spy = new AltDeployEventSpy( new LayoutParser() );
+        Set<Artifact> result = spy.processArtifacts( projectPlugins );
+        assertEquals( 1, result.size() );
+
+        spy.updateProperties( result.stream().findFirst().get(), properties );
+
+        assertEquals( "local::default::file:///tmp/deploy", properties.getProperty( ALT_DEPLOY ) );
     }
 }
