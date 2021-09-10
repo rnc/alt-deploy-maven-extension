@@ -1,4 +1,4 @@
-[![Build Status (Travis CI)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=master)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=master)
+[![Build Status (Travis CI)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=main)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=main)
 
 
 
