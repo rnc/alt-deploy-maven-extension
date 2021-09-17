@@ -1,6 +1,4 @@
-[![Build Status (Travis CI)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=main)](https://travis-ci.org/rnc/alt-deploy-maven-extension.svg?branch=main)
-
-
+[![Actions Status](https://github.com/rnc/alt-deploy-maven-extension/workflows/CI/badge.svg)](https://github.com/rnc/alt-deploy-maven-extension/workflows/CI/actions)
 
 # Maven extension to handle altDeploymentRepository legacy/new formats.
 
