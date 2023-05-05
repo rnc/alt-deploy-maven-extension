@@ -27,7 +27,7 @@
 
   <groupId>org.goots.maven.extensions</groupId>
   <artifactId>alt-deploy-maven-extension</artifactId>
-  <version>1.8</version>
+  <version>1.9-SNAPSHOT</version>
 
   <name>Alt-Deploy Handler Maven Extension</name>
   <description>Maven extension to handle legacy / new formats of altDeploymentRepository</description>
