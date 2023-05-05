@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.redhat.rcm</groupId>
     <artifactId>redhat-releng-tools</artifactId>
-    <version>9</version>
+    <version>11</version>
   </parent>
 
   <groupId>org.goots.maven.extensions</groupId>
@@ -61,8 +61,8 @@
 
     <javaVersion>1.8</javaVersion>
     <javaTestVersion>${javaVersion}</javaTestVersion>
-    <mavenVersion>3.5.2</mavenVersion>
-    <sisu>0.3.3</sisu>
+    <mavenVersion>3.6.3</mavenVersion>
+    <sisu>0.3.4</sisu>
 
     <it.maven.home>${project.build.directory}/apache-maven-</it.maven.home>
     <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
@@ -116,32 +116,32 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.7.25</version>
+        <version>1.7.36</version>
         <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.13.1</version>
+        <version>4.13.2</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>com.github.stefanbirkner</groupId>
         <artifactId>system-rules</artifactId>
-        <version>1.18.0</version>
+        <version>1.19.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.2.3</version>
+        <version>1.2.9</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
-        <version>1.2.3</version>
+        <version>1.2.9</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -313,10 +313,14 @@
                     <item>3.2.5</item>
                     <item>3.3.1</item>
                     <item>3.3.9</item>
-                    <item>${mavenVersion}</item>
+                    <item>3.5.2</item>
                     <item>3.5.4</item>
                     <item>3.6.0</item>
-                    <item>3.6.3</item>
+                    <item>${mavenVersion}</item>
+                    <item>3.8.1</item>
+                    <item>3.8.8</item>
+                    <item>3.9.0</item>
+                    <item>3.9.1</item>
                   </items>
                   <pluginExecutors>
                     <pluginExecutor>
