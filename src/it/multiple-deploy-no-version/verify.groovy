@@ -13,12 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-def pomFile = new File( basedir, 'pom.xml' )
-System.out.println( "Slurping POM: ${pomFile.getAbsolutePath()}" )
-
 
 File buildLog = new File( basedir, 'build.log' )
+System.out.println( "Slurping buildLog: ${buildLog.getAbsolutePath()}" )
+
 assert buildLog.getText().contains( "Activating AltDeploy extension" )
-assert buildLog.getText().contains( "Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:2.7:runtime" )
+if (mavenVersion.equals("3.9.0") ) {
+    assert buildLog.getText().contains("Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:3.0.0:runtime")
+} else if (mavenVersion.equals("3.9.1") ) {
+        assert buildLog.getText().contains("Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:3.1.0:runtime")
+} else {
+    assert buildLog.getText().contains( "Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:2.7:runtime" )
+}
 assert buildLog.getText().count("Found deploy plugin org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:RELEASE") == 2
 assert buildLog.getText().count("Resetting maven-deploy-plugin org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:RELEASE") == 2
