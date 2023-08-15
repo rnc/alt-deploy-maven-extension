@@ -61,7 +61,7 @@
 
     <javaVersion>1.8</javaVersion>
     <javaTestVersion>${javaVersion}</javaTestVersion>
-    <mavenVersion>3.6.3</mavenVersion>
+    <mavenVersion>3.8.1</mavenVersion>
     <sisu>0.3.4</sisu>
 
     <it.maven.home>${project.build.directory}/apache-maven-</it.maven.home>
