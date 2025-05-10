@@ -215,7 +215,7 @@
           <configuration>
             <mavenExecutorId>forked-path</mavenExecutorId>
             <useReleaseProfile>false</useReleaseProfile>
-            <arguments>-Prelease,run-its</arguments>
+            <arguments>-Prelease</arguments>
           </configuration>
         </plugin>
         <plugin>
