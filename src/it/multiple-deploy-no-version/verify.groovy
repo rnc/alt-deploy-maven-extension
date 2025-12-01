@@ -21,6 +21,8 @@ if (mavenVersion.equals("3.9.0") ) {
     assert buildLog.getText().contains("Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:3.0.0:runtime")
 } else if (mavenVersion.equals("3.9.1") ) {
         assert buildLog.getText().contains("Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:3.1.0:runtime")
+} else if (mavenVersion.equals("3.9.8") || mavenVersion.equals("3.9.11") ) {
+    assert buildLog.getText().contains("Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:3.1.2:runtime")
 } else {
     assert buildLog.getText().contains( "Deploy plugin is org.apache.maven.plugins:maven-deploy-plugin:maven-plugin:2.7:runtime" )
 }

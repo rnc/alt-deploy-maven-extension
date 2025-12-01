@@ -185,20 +185,20 @@ public class MavenArtifactTest
         Artifact legacy2 = new DefaultArtifact( "org.apache.maven.plugins", "maven-deploy-plugin", "2.8",
                                                 "runtime", "maven-plugin", "", new DefaultArtifactHandler(  ) );
         mdp.setVersion( "2.8" );
-        Plugin mdp2 = mdp.clone();
+        Plugin mdp2 = new Plugin();
         mdp2.setGroupId( "org.apache.maven" );
         mdp2.setArtifactId( "maven-deploy-plugin" );
         mdp2.setVersion( "2.8" );
-        Plugin mdp3 = mdp.clone();
+        Plugin mdp3 = new Plugin();
         mdp3.setGroupId( "org.apache.maven" );
         mdp3.setArtifactId( "maven-deploy-plugin" );
         mdp3.setVersion( "RELEASE" );
 
         Map<Artifact, Plugin> collection = new HashMap<>();
         collection.put( legacy, mdp );
-        collection.put( post3M1, mdp2 );
+        collection.put( post3M1, mdp3 );
         Map<Artifact, Plugin> collection2 = new HashMap<>();
-        collection2.put( legacy2, mdp3 );
+        collection2.put( legacy2, mdp2 );
         Map<MavenProject, Map<Artifact, Plugin>> projectPlugins = new HashMap<>();
         projectPlugins.put( project1, collection );
         MavenProject project2 = new MavenProject();
