@@ -32,7 +32,7 @@
   <name>Alt-Deploy Handler Maven Extension</name>
   <description>Maven extension to handle legacy / new formats of altDeploymentRepository</description>
   <inceptionYear>2019</inceptionYear>
-  <url>http://github.com/rnc/alt-deploy-maven-extension</url>
+  <url>https://github.com/rnc/alt-deploy-maven-extension</url>
 
   <licenses>
     <license>
@@ -52,7 +52,7 @@
   <scm>
     <connection>scm:git:https://github.com/rnc/alt-deploy-maven-extension.git</connection>
     <developerConnection>scm:git:git@github.com:rnc/alt-deploy-maven-extension.git</developerConnection>
-    <url>http://github.com/rnc/alt-deploy-maven-extension</url>
+    <url>https://github.com/rnc/alt-deploy-maven-extension</url>
     <tag>alt-deploy-maven-extension-1.8.1</tag>
   </scm>
 
@@ -323,11 +323,13 @@
                     <item>3.5.2</item>
                     <item>3.5.4</item>
                     <item>3.6.0</item>
-                    <item>${mavenVersion}</item>
+                    <item>3.6.3</item>
                     <item>3.8.1</item>
                     <item>3.8.8</item>
                     <item>3.9.0</item>
                     <item>3.9.1</item>
+                    <item>3.9.8</item>
+                    <item>3.9.11</item>
                   </items>
                   <pluginExecutors>
                     <pluginExecutor>
